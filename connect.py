@@ -15,5 +15,3 @@ def connect(config):
 if __name__ == '__main__':
     config = load_config()
     connect(config)
-
-conn = psycopg2.connect("dbname=project user=postgres password=pgadmin4")
