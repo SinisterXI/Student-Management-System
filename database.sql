@@ -8,7 +8,7 @@ CREATE TABLE Hostel (
     hostel_number VARCHAR(20) PRIMARY KEY,
     supervisor_name VARCHAR(100),
     supervisor_contact VARCHAR(20),
-    room_number INT UNIQUE, -- Add UNIQUE constraint
+    room_number INT UNIQUE, 
     hostel_capacity INT
 );
 
