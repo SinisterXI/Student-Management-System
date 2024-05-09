@@ -32,7 +32,7 @@ INSERT INTO Teachers (teacher_name, email, teacher_position, teacher_salary, tea
 INSERT INTO Course (course_name, teacher_id, students_enrolled) VALUES 
 ('Introduction to Programming', (SELECT teacher_id FROM Teachers WHERE email = 'qasim@giki.edu.pk'), 50);
 
-																							--Inserting dummy data into Students table
+--Inserting dummy data into Students table
 INSERT INTO Students (
     registration_number, student_name, email, student_date_of_birth, student_cgpa, student_degree, 
     student_enrollment_year, Father_name, student_cnic, student_address, 
