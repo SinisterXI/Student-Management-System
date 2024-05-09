@@ -9,7 +9,7 @@ app.secret_key = '1PoepThNcgk6MiS1EM3wygyokLzjTNkY'
 # Database setup
 DB_NAME = 'project'
 DB_USER = 'postgres'
-DB_PASSWORD = 'pgadmin4'
+DB_PASSWORD = '0328'
 DB_HOST = 'localhost'
 DB_PORT = '5432'
 
@@ -70,7 +70,7 @@ def get_student_info(email):
         connection = psycopg2.connect(
             dbname="project",
             user="postgres",
-            password="pgadmin4",
+            password="0328",
             host="localhost",
             port="5432"
         )
@@ -119,7 +119,7 @@ def get_teacher_details(teacher_id):
         # Establish connection to the database
         connection = psycopg2.connect(
             user="postgres",
-            password="pgadmin4",
+            password="0328",
             host="localhost",
             port="5432",
             database="project"
