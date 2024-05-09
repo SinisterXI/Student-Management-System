@@ -1,29 +1,33 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-from flask import session
+from flask import Flask, render_template, request, redirect, url_for, session
 import psycopg2
 from psycopg2 import sql
 
 app = Flask(__name__)
 
 app.secret_key = '1PoepThNcgk6MiS1EM3wygyokLzjTNkY'
-# Database setup
+
+# Define the database connection parameters
 DB_NAME = 'project'
 DB_USER = 'postgres'
 DB_PASSWORD = '0328'
 DB_HOST = 'localhost'
 DB_PORT = '5432'
 
-# Create a connection function to avoid repeating code
+# Create a function to establish a connection to the database
 def create_connection():
-    return psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        host=DB_HOST,
-        port=DB_PORT
-    )
+    try:
+        connection = psycopg2.connect(
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST,
+            port=DB_PORT
+        )
+        return connection
+    except psycopg2.Error as e:
+        print("Error connecting to the database:", e)
+        return None
 
-# Routes
 @app.route('/')
 def login():
     return render_template('login.html')
@@ -61,20 +65,11 @@ def authenticate():
     else:
         return "Invalid credentials"
     
-from flask import jsonify
-
 
 def get_student_info(email):
     try:
-        # Establish a new connection to the database
-        connection = psycopg2.connect(
-            dbname="project",
-            user="postgres",
-            password="0328",
-            host="localhost",
-            port="5432"
-        )
-
+        # Establish a new connection to the database using the function
+        connection = create_connection()
         cursor = connection.cursor()
 
         # Execute the SQL query to fetch student details based on email
@@ -96,8 +91,9 @@ def get_student_info(email):
             # If no row exists, it means the email doesn't match any credentials
             return {'message': 'Email not found in credentials'}
 
-    except Error as e:
+    except psycopg2.Error as e:
         # Handle any exceptions
+        print("Error:", e)
         return {'error': str(e)}, 500
 
     finally:
@@ -108,23 +104,10 @@ def get_student_info(email):
             print("PostgreSQL connection is closed")
 
 
-import psycopg2
-from psycopg2 import Error
-
-import psycopg2
-from psycopg2 import Error
-
 def get_teacher_details(teacher_id):
     try:
-        # Establish connection to the database
-        connection = psycopg2.connect(
-            user="postgres",
-            password="0328",
-            host="localhost",
-            port="5432",
-            database="project"
-        )
-
+        # Establish connection to the database using the function
+        connection = create_connection()
         cursor = connection.cursor()
 
         # Query to fetch details of the teacher with the given teacher_id
@@ -145,7 +128,7 @@ def get_teacher_details(teacher_id):
         else:
             return {"error": "Teacher not found"}
 
-    except Error as e:
+    except psycopg2.Error as e:
         print("Error fetching teacher details:", e)
         return {"error": str(e)}
 
@@ -154,7 +137,6 @@ def get_teacher_details(teacher_id):
             cursor.close()
             connection.close()
             print("PostgreSQL connection is closed")
-
 
 
 @app.route('/student')
@@ -172,6 +154,7 @@ def student():
         # Handle the case where the email is not found in the session
         return "Email not found in session"
 
+
 @app.route('/teacher')
 def teacher():
     teacher_id = 1  # Example teacher ID, replace with actual teacher ID
@@ -179,9 +162,11 @@ def teacher():
     print("Teacher Details in Flask Route:", teacher_details)  # Add this line to check data
     return render_template('teacher.html', teacher_details=teacher_details)
 
+
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
