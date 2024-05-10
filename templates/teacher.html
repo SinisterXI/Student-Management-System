@@ -4,17 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        ul li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        ul li a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        ul li a:hover {
+            background-color: #ddd;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <h1>My Details</h1>
-    <div>
-        <p><strong>Teacher ID:</strong> {{ teacher_details.teacher_id }}</p>
-        <p><strong>Name:</strong> {{ teacher_details.teacher_name }}</p>
-        <p><strong>Email:</strong> {{ teacher_details.email }}</p>
-        <p><strong>Position:</strong> {{ teacher_details.teacher_position }}</p>
-        <p><strong>Salary:</strong> {{ teacher_details.teacher_salary }}</p>
-        <p><strong>Department ID:</strong> {{ teacher_details.teacher_department_id }}</p>
-    </div>
-    <a href="/">Back to Home</a>
+    <h1>Teacher Details</h1>
+    <ul>
+        <li><a href="#" onclick="toggleDetails()">View My Details</a></li>
+        <li><a href="/view-courses">View Course Requests</a></li> <!-- Added register courses option -->
+        <li><a href="/Mark-attendance">Mark Attendance</a></li>
+        <li><a href="/Give-grades">Give Grades</a></li>
+    </ul>
+
+    <!-- This is the table for displaying teacher details -->
+    <table border="1" id="detailsTable" style="display: none;">
+        <tbody>
+            <tr>
+                <th>Name:</th>
+                <td>{{ teacher_details.teacher_name }}</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>{{ teacher_details.email }}</td>
+            </tr>
+            <tr>
+                <th>Position:</th>
+                <td>{{ teacher_details.teacher_position }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p id="noDetailsMsg" style="text-align: center; display: none;">No teacher found.</p>
+
+    <script>
+        function toggleDetails() {
+            var table = document.getElementById("detailsTable");
+            var msg = document.getElementById("noDetailsMsg");
+            if (table.style.display === "none") {
+                table.style.display = "table";
+                msg.style.display = "none";
+            } else {
+                table.style.display = "none";
+                msg.style.display = "block";
+            }
+        }
+    </script>
 </body>
 </html>
