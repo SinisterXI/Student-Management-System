@@ -1,12 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
-from flask import session
+from flask import Flask, render_template, request, redirect, url_for, session
 import psycopg2
 from psycopg2 import sql
+from psycopg2 import Error
 
 app = Flask(__name__)
-
 app.secret_key = '1PoepThNcgk6MiS1EM3wygyokLzjTNkY'
-# Database setup
+
+# Database configuration
 DB_NAME = 'project'
 DB_USER = 'postgres'
 DB_PASSWORD = '0328'
@@ -23,7 +23,6 @@ def create_connection():
         port=DB_PORT
     )
 
-# Routes
 @app.route('/')
 def login():
     return render_template('login.html')
@@ -43,14 +42,14 @@ def authenticate():
     query = sql.SQL("SELECT * FROM Credentials WHERE email=%s AND password=%s AND role=%s")
     cur.execute(query, (email, password, role))
 
-    Credentials = cur.fetchone()
+    credentials = cur.fetchone()
     conn.close()
 
-    print("Credentials from DB:", Credentials)  # Debugging output
+    print("Credentials from DB:", credentials)  # Debugging output
 
-    if Credentials:
+    if credentials:
         # Store the email in the session
-        session['email'] = email  # Add this line to store email in session
+        session['email'] = email
 
         if role == 'student':
             return redirect(url_for('student'))
@@ -60,20 +59,11 @@ def authenticate():
             return redirect(url_for('admin'))
     else:
         return "Invalid credentials"
-    
-from flask import jsonify
-
 
 def get_student_info(email):
     try:
         # Establish a new connection to the database
-        connection = psycopg2.connect(
-            dbname="project",
-            user="postgres",
-            password="0328",
-            host="localhost",
-            port="5432"
-        )
+        connection = create_connection()
 
         cursor = connection.cursor()
 
@@ -114,19 +104,10 @@ def get_student_info(email):
             connection.close()
             print("PostgreSQL connection is closed")
 
-import psycopg2
-from psycopg2 import Error
-
 def get_teacher_details(email):
     try:
         # Establish connection to the database
-        connection = psycopg2.connect(
-            user="postgres",
-            password="0328",
-            host="localhost",
-            port="5432",
-            database="project"
-        )
+        connection = create_connection()
 
         cursor = connection.cursor()
 
@@ -163,13 +144,7 @@ def registration_confirmation():
 def get_student_program(email):
     try:
         # Establish connection to the database
-        connection = psycopg2.connect(
-            user="postgres",
-            password="0328",
-            host="localhost",
-            port="5432",
-            database="project"
-        )
+        connection = create_connection()
 
         cursor = connection.cursor()
 
@@ -196,13 +171,7 @@ def get_student_program(email):
 def get_courses_by_program(program):
     try:
         # Establish connection to the database
-        connection = psycopg2.connect(
-            user="postgres",
-            password="0328",
-            host="localhost",
-            port="5432",
-            database="project"
-        )
+        connection = create_connection()
 
         cursor = connection.cursor()
 
@@ -225,13 +194,7 @@ def get_courses_by_program(program):
 def register_student_courses(email, selected_courses):
     try:
         # Establish connection to the database
-        connection = psycopg2.connect(
-            user="postgres",
-            password="0328",
-            host="localhost",
-            port="5432",
-            database="project"
-        )
+        connection = create_connection()
 
         cursor = connection.cursor()
 
@@ -243,7 +206,7 @@ def register_student_courses(email, selected_courses):
 
             # Insert into registrations table
             cursor.execute("INSERT INTO registrations (course_name, teacher_name, registration_number) VALUES (%s, %s, %s)",
-                           (course.course_name, course.teacher_name, registration_number))
+                           (course['course_name'], course['teacher_name'], registration_number))
 
         # Commit the transaction
         connection.commit()
@@ -264,13 +227,7 @@ def register_student_courses(email, selected_courses):
 def get_course_by_name(course_name):
     try:
         # Establish connection to the database
-        connection = psycopg2.connect(
-            user="postgres",
-            password="0328",
-            host="localhost",
-            port="5432",
-            database="project"
-        )
+        connection = create_connection()
 
         cursor = connection.cursor()
 
@@ -338,12 +295,6 @@ def register_courses():
             return redirect(url_for('registration_confirmation'))
     else:
         return "Email not found in session"
-
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
 
 
 @app.route('/student')
