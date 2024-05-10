@@ -418,23 +418,26 @@ def insert_teacher():
         'program_name': request.form['program_name'],
         'password': request.form['password']
     }
+
+    cursor = db_connection.cursor()
     try:
-        cursor = db_connection.cursor()
+        # First, insert into Credentials
+        cursor.execute(
+            """INSERT INTO Credentials (email, password, role) VALUES (%s, %s, 'teacher')""",
+            (data['email'], data['password'])
+        )
+        # Then, insert into Teachers
         cursor.execute(
             """INSERT INTO Teachers (teacher_name, email, teacher_position, teacher_program_name) 
             VALUES (%s, %s, %s, %s)""",
             (data['name'], data['email'], data['position'], data['program_name'])
         )
-        cursor.execute(
-            """INSERT INTO Credentials (email, password, role) VALUES (%s, %s, 'teacher')""",
-            (data['email'], data['password'])
-        )
         db_connection.commit()
+        return redirect(url_for('admin'))
     except psycopg2.Error as e:
-        print(f"Error inserting teacher: {e}")
         db_connection.rollback()
-        return "Error inserting teacher"
-    return redirect(url_for('admin'))
+        print(f"Error inserting teacher: {e}")
+        return "Error inserting teacher", 500
 
 # Update teacher with program name
 @app.route('/update-teacher', methods=['POST'])
