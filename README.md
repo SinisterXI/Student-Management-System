@@ -14,7 +14,7 @@ Welcome to the **Student Management System** project! This repository contains t
 
 ## Overview
 
-The **Student Management System** is designed to manage student information effectively. It allows users to add, update, delete, and view student records in a structured and organized manner. The system aims to simplify administrative tasks in educational institutions by providing an easy-to-use interface for managing student data.
+The **Student Management System** is designed to manage Student information. It allows users to add, update, delete, and view student records in a structured and organized manner. The system aims to simplify administrative tasks in educational institutions by providing an easy-to-use interface for managing student data.
 
 ## Features
 
